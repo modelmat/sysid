@@ -76,6 +76,12 @@ void AddMotorController(
     ctreController->ConfigFactoryDefault();
     ctreController->SetInverted(inverted);
     ctreController->SetNeutralMode(motorcontrol::NeutralMode::Brake);
+    ctreController->SetStatusFramePeriod(motorcontrol::StatusFrameEnhanced::Status_4_AinTempVbat, 255);
+    ctreController->SetStatusFramePeriod(motorcontrol::StatusFrameEnhanced::Status_8_PulseWidth, 255);
+    ctreController->SetStatusFramePeriod(motorcontrol::StatusFrameEnhanced::Status_10_Targets, 255);
+    ctreController->SetStatusFramePeriod(motorcontrol::StatusFrameEnhanced::Status_12_Feedback1, 255);
+    ctreController->SetStatusFramePeriod(motorcontrol::StatusFrameEnhanced::Status_13_Base_PIDF0, 255);
+    ctreController->SetStatusFramePeriod(motorcontrol::StatusFrameEnhanced::Status_14_Turn_PIDF1, 255);
   } else if (controller == "SPARK MAX (Brushless)" ||
              controller == "SPARK MAX (Brushed)") {
     if (controller == "SPARK MAX (Brushless)") {
