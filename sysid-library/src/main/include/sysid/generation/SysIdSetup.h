@@ -17,7 +17,6 @@
 #include <frc/Encoder.h>
 #include <frc/interfaces/Gyro.h>
 #include <frc/motorcontrol/MotorController.h>
-#include <rev/CANSparkMax.h>
 #include <units/voltage.h>
 #include <wpi/json.h>
 #include <wpi/raw_istream.h>
@@ -91,8 +90,6 @@ void SetupEncoders(
     double gearing, int numSamples, std::string_view controllerName,
     frc::MotorController* controller, bool encoderInverted,
     const std::vector<int>& encoderPorts, std::unique_ptr<CANCoder>& cancoder,
-    std::unique_ptr<rev::SparkMaxRelativeEncoder>& revEncoderPort,
-    std::unique_ptr<rev::SparkMaxAlternateEncoder>& revDataPort,
     std::unique_ptr<frc::Encoder>& encoder, std::function<double()>& position,
     std::function<double()>& rate);
 

@@ -6,14 +6,12 @@
 
 #include <stdexcept>
 
-#include <CANVenom.h>
 #include <fmt/core.h>
 #include <frc/ADXRS450_Gyro.h>
 #include <frc/AnalogGyro.h>
 #include <frc/Filesystem.h>
 #include <frc/TimedRobot.h>
 #include <frc/motorcontrol/Spark.h>
-#include <frc/romi/RomiGyro.h>
 #include <units/angle.h>
 #include <units/angular_velocity.h>
 #include <wpi/SmallString.h>
@@ -21,7 +19,7 @@
 #include <wpi/fs.h>
 
 #ifdef __FRC_ROBORIO__
-#include "AHRS.h"
+// #include "AHRS.h"
 #endif
 
 // Based on https://gcc.gnu.org/onlinedocs/cpp/Stringizing.html
@@ -78,28 +76,28 @@ void AddMotorController(
     ctreController->SetNeutralMode(motorcontrol::NeutralMode::Brake);
   } else if (controller == "SPARK MAX (Brushless)" ||
              controller == "SPARK MAX (Brushed)") {
-    if (controller == "SPARK MAX (Brushless)") {
-      fmt::print("Setup SPARK MAX (Brushless)\n");
-      controllers->emplace_back(std::make_unique<rev::CANSparkMax>(
-          port, rev::CANSparkMax::MotorType::kBrushless));
-    } else {
-      fmt::print("Setup SPARK MAX (Brushed)\n");
-      controllers->emplace_back(std::make_unique<rev::CANSparkMax>(
-          port, rev::CANSparkMax::MotorType::kBrushed));
-    }
+    // if (controller == "SPARK MAX (Brushless)") {
+    //   fmt::print("Setup SPARK MAX (Brushless)\n");
+    //   controllers->emplace_back(std::make_unique<rev::CANSparkMax>(
+    //       port, rev::CANSparkMax::MotorType::kBrushless));
+    // } else {
+    //   fmt::print("Setup SPARK MAX (Brushed)\n");
+    //   controllers->emplace_back(std::make_unique<rev::CANSparkMax>(
+    //       port, rev::CANSparkMax::MotorType::kBrushed));
+    // }
 
-    auto* sparkMax = static_cast<rev::CANSparkMax*>(controllers->back().get());
-    sparkMax->RestoreFactoryDefaults();
-    sparkMax->SetInverted(inverted);
-    sparkMax->SetIdleMode(rev::CANSparkMax::IdleMode::kBrake);
+    // auto* sparkMax = static_cast<rev::CANSparkMax*>(controllers->back().get());
+    // sparkMax->RestoreFactoryDefaults();
+    // sparkMax->SetInverted(inverted);
+    // sparkMax->SetIdleMode(rev::CANSparkMax::IdleMode::kBrake);
   } else if (controller == "Venom") {
-    fmt::print("Setup Venom\n");
-    controllers->emplace_back(std::make_unique<frc::CANVenom>(port));
+    // fmt::print("Setup Venom\n");
+    // controllers->emplace_back(std::make_unique<frc::CANVenom>(port));
 
-    auto* venom = static_cast<frc::CANVenom*>(controllers->back().get());
+    // auto* venom = static_cast<frc::CANVenom*>(controllers->back().get());
 
-    venom->SetInverted(inverted);
-    venom->SetBrakeCoastMode(frc::CANVenom::BrakeCoastMode::kBrake);
+    // venom->SetInverted(inverted);
+    // venom->SetBrakeCoastMode(frc::CANVenom::BrakeCoastMode::kBrake);
   } else {
     fmt::print("Setup PWM\n");
     controllers->emplace_back(std::make_unique<frc::Spark>(port));
@@ -160,8 +158,6 @@ void SetupEncoders(
     double gearing, int numSamples, std::string_view controllerName,
     frc::MotorController* controller, bool encoderInverted,
     const std::vector<int>& encoderPorts, std::unique_ptr<CANCoder>& cancoder,
-    std::unique_ptr<rev::SparkMaxRelativeEncoder>& revEncoderPort,
-    std::unique_ptr<rev::SparkMaxAlternateEncoder>& revDataPort,
     std::unique_ptr<frc::Encoder>& encoder, std::function<double()>& position,
     std::function<double()>& rate) {
   double combinedCPR = cpr * gearing;
@@ -182,53 +178,53 @@ void SetupEncoders(
       SetupCTREEncoder(controller, feedbackDevice, period, combinedCPR,
                        numSamples, encoderInverted, position, rate);
     } else {  // Venom
-      fmt::print("Setup Built-in+Venom\n");
-      auto* venom = static_cast<frc::CANVenom*>(controller);
-      position = [=] { return venom->GetPosition(); };
-      rate = [=] {
-        return venom->GetSpeed() /
-               60;  // Conversion from RPM to rotations per second
-      };
+      // fmt::print("Setup Built-in+Venom\n");
+      // auto* venom = static_cast<frc::CANVenom*>(controller);
+      // position = [=] { return venom->GetPosition(); };
+      // rate = [=] {
+      //   return venom->GetSpeed() /
+      //          60;  // Conversion from RPM to rotations per second
+      // };
     }
   } else if (encoderType == "Encoder Port") {
-    auto* sparkMax = static_cast<rev::CANSparkMax*>(controller);
-    if (controllerName != "SPARK MAX (Brushless)") {
-      fmt::print("Setup SPARK MAX (Brushed) Encoder Port\n");
-      revEncoderPort =
-          std::make_unique<rev::SparkMaxRelativeEncoder>(sparkMax->GetEncoder(
-              rev::SparkMaxRelativeEncoder::Type::kQuadrature, cpr));
-      revEncoderPort->SetInverted(encoderInverted);
-    } else {
-      fmt::print("Setup SPARK MAX (Brushless) Encoder Port\n");
-      revEncoderPort =
-          std::make_unique<rev::SparkMaxRelativeEncoder>(sparkMax->GetEncoder(
-              rev::SparkMaxRelativeEncoder::Type::kHallSensor));
-    }
+    // auto* sparkMax = static_cast<rev::CANSparkMax*>(controller);
+    // if (controllerName != "SPARK MAX (Brushless)") {
+    //   fmt::print("Setup SPARK MAX (Brushed) Encoder Port\n");
+    //   revEncoderPort =
+    //       std::make_unique<rev::SparkMaxRelativeEncoder>(sparkMax->GetEncoder(
+    //           rev::SparkMaxRelativeEncoder::Type::kQuadrature, cpr));
+    //   revEncoderPort->SetInverted(encoderInverted);
+    // } else {
+    //   fmt::print("Setup SPARK MAX (Brushless) Encoder Port\n");
+    //   revEncoderPort =
+    //       std::make_unique<rev::SparkMaxRelativeEncoder>(sparkMax->GetEncoder(
+    //           rev::SparkMaxRelativeEncoder::Type::kHallSensor));
+    // }
 
-    revEncoderPort->SetMeasurementPeriod(period);
-    revEncoderPort->SetAverageDepth(numSamples);
+    // revEncoderPort->SetMeasurementPeriod(period);
+    // revEncoderPort->SetAverageDepth(numSamples);
 
-    position = [=, &revEncoderPort] {
-      return revEncoderPort->GetPosition() / gearing;
-    };
-    rate = [=, &revEncoderPort] {
-      return revEncoderPort->GetVelocity() / gearing / 60;
-    };
+    // position = [=, &revEncoderPort] {
+    //   return revEncoderPort->GetPosition() / gearing;
+    // };
+    // rate = [=, &revEncoderPort] {
+    //   return revEncoderPort->GetVelocity() / gearing / 60;
+    // };
   } else if (encoderType == "Data Port") {
     fmt::print("Setup SPARK MAX Data Port\n");
-    auto* sparkMax = static_cast<rev::CANSparkMax*>(controller);
-    revDataPort = std::make_unique<rev::SparkMaxAlternateEncoder>(
-        sparkMax->GetAlternateEncoder(
-            rev::SparkMaxAlternateEncoder::Type::kQuadrature, cpr));
-    revDataPort->SetInverted(encoderInverted);
-    revDataPort->SetMeasurementPeriod(period);
-    revDataPort->SetAverageDepth(numSamples);
-    position = [=, &revDataPort] {
-      return revDataPort->GetPosition() / gearing;
-    };
-    rate = [=, &revDataPort] {
-      return revDataPort->GetVelocity() / gearing / 60;
-    };
+    // auto* sparkMax = static_cast<rev::CANSparkMax*>(controller);
+    // revDataPort = std::make_unique<rev::SparkMaxAlternateEncoder>(
+    //     sparkMax->GetAlternateEncoder(
+    //         rev::SparkMaxAlternateEncoder::Type::kQuadrature, cpr));
+    // revDataPort->SetInverted(encoderInverted);
+    // revDataPort->SetMeasurementPeriod(period);
+    // revDataPort->SetAverageDepth(numSamples);
+    // position = [=, &revDataPort] {
+    //   return revDataPort->GetPosition() / gearing;
+    // };
+    // rate = [=, &revDataPort] {
+    //   return revDataPort->GetVelocity() / gearing / 60;
+    // };
   } else if (encoderType == "Tachometer") {
     fmt::print("Setup Tachometer\n");
     SetupCTREEncoder(controller, FeedbackDevice::Tachometer, period,
@@ -401,29 +397,29 @@ void SetupGyro(
       if (gyroCtor == "SerialPort (USB)") {
         fmt::print("Setup NavX, SerialPort (USB)\n");
 #ifdef __FRC_ROBORIO__
-        gyro = std::make_unique<AHRS>(frc::SerialPort::Port::kUSB);
+        // gyro = std::make_unique<AHRS>(frc::SerialPort::Port::kUSB);
 #endif
       } else if (gyroCtor == "I2C (MXP)") {
         fmt::print("Setup NavX, I2C (MXP)\n");
 #ifdef __FRC_ROBORIO__
-        gyro = std::make_unique<AHRS>(frc::I2C::Port::kMXP);
+        // gyro = std::make_unique<AHRS>(frc::I2C::Port::kMXP);
 #endif
       } else if (gyroCtor == "SerialPort (MXP)") {
         fmt::print("Setup NavX, SerialPort (MXP)\n");
 #ifdef __FRC_ROBORIO__
-        gyro = std::make_unique<AHRS>(frc::SerialPort::Port::kMXP);
+        // gyro = std::make_unique<AHRS>(frc::SerialPort::Port::kMXP);
 #endif
       } else {
         fmt::print("Setup NavX, SPI (MXP)\n");
 #ifdef __FRC_ROBORIO__
-        gyro = std::make_unique<AHRS>(frc::SPI::Port::kMXP);
+        // gyro = std::make_unique<AHRS>(frc::SPI::Port::kMXP);
 #endif
       }
       //     // FIXME: Update Romi Gyro once vendordep is out
     } else if (gyroType == "Romi") {
       fmt::print("Setup Romi\n");
 #ifndef __FRC_ROBORIO__
-      gyro = std::make_unique<frc::RomiGyro>();
+      // gyro = std::make_unique<frc::RomiGyro>();
 #endif
     } else if (gyroType == "Analog Gyro") {
       try {

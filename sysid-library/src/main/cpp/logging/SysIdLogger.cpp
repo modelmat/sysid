@@ -10,7 +10,6 @@
 #include <sstream>
 #include <stdexcept>
 
-#include <CANVenom.h>
 #include <fmt/core.h>
 #include <frc/Notifier.h>
 #include <frc/RobotBase.h>
@@ -19,7 +18,6 @@
 #include <frc/Timer.h>
 #include <frc/livewindow/LiveWindow.h>
 #include <frc/smartdashboard/SmartDashboard.h>
-#include <rev/CANSparkMax.h>
 #include <wpi/StringExtras.h>
 
 using namespace sysid;
@@ -47,11 +45,11 @@ double SysIdLogger::MeasureVoltage(
   for (size_t i = 0; i < controllers.size(); ++i) {
     auto&& controller = controllers[i].get();
     if (wpi::starts_with(controllerNames[i], "SPARK MAX")) {
-      auto* smax = static_cast<rev::CANSparkMax*>(controller);
-      sum += smax->GetBusVoltage() * smax->GetAppliedOutput();
-      if constexpr (frc::RobotBase::IsSimulation()) {
-        fmt::print("Recording SPARK MAX voltage\n");
-      }
+      // auto* smax = static_cast<rev::CANSparkMax*>(controller);
+      // sum += smax->GetBusVoltage() * smax->GetAppliedOutput();
+      // if constexpr (frc::RobotBase::IsSimulation()) {
+      //   fmt::print("Recording SPARK MAX voltage\n");
+      // }
     } else if (wpi::starts_with(controllerNames[i], "Talon") ||
                wpi::starts_with(controllerNames[i], "Victor")) {
       auto* ctreController = dynamic_cast<WPI_BaseMotorController*>(controller);
@@ -60,11 +58,11 @@ double SysIdLogger::MeasureVoltage(
         fmt::print("Recording CTRE voltage\n");
       }
     } else if (controllerNames[i] == "Venom") {
-      auto* venom = static_cast<frc::CANVenom*>(controller);
-      sum += venom->GetOutputVoltage();
-      if constexpr (frc::RobotBase::IsSimulation()) {
-        fmt::print("Recording Venom voltage\n");
-      }
+      // auto* venom = static_cast<frc::CANVenom*>(controller);
+      // sum += venom->GetOutputVoltage();
+      // if constexpr (frc::RobotBase::IsSimulation()) {
+      //   fmt::print("Recording Venom voltage\n");
+      // }
     } else {
       sum += controllers[i]->Get() *
              frc::RobotController::GetBatteryVoltage().value();
