@@ -98,6 +98,10 @@ void AddMotorController(
     sparkMax->RestoreFactoryDefaults();
     sparkMax->SetInverted(inverted);
     sparkMax->SetIdleMode(rev::CANSparkMax::IdleMode::kBrake);
+    sparkMax->SetPeriodicFramePeriod(rev::CANSparkMaxLowLevel::PeriodicFrame::kStatus0, 100);
+    sparkMax->SetPeriodicFramePeriod(rev::CANSparkMaxLowLevel::PeriodicFrame::kStatus1, 100);
+    sparkMax->SetPeriodicFramePeriod(rev::CANSparkMaxLowLevel::PeriodicFrame::kStatus2, 100);
+    sparkMax->SetPeriodicFramePeriod(rev::CANSparkMaxLowLevel::PeriodicFrame::kStatus3, 65535);
   } else if (controller == "Venom") {
     fmt::print("Setup Venom\n");
     controllers->emplace_back(std::make_unique<frc::CANVenom>(port));
